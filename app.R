@@ -5,7 +5,6 @@ library(bslib)
 
 # List of timezones
 default_timezones <- c(
-  "America/New_York",
   "Europe/London",
   "Europe/Istanbul",
   "Asia/Singapore",
