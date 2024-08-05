@@ -29,20 +29,22 @@ ui <- page_fluid(
       }
     "))
   ),
-  
+  br(),
   h1("International Meeting Time Converter"),
+  h3('aka "Wait, I have to be awake when?"'),
+  br(),
   
   fluidRow(
     column(6,
            card(
-             card_header("Select Time and Timezone"),
+             card_header("1. Select Meeting Time"),
              card_body(
                timeInput("selected_time", "Select Time:", value = NULL, seconds = FALSE),
                selectizeInput("selected_timezone", "Select Timezone:", 
                               choices = OlsonNames(), 
                               selected = NULL,
                               options = list(
-                                placeholder = 'Search for a timezone',
+                                placeholder = 'Search',
                                 onInitialize = I('function() { this.setValue(""); }')
                               ))
              )
@@ -50,18 +52,17 @@ ui <- page_fluid(
     ),
     column(6,
            card(
-             card_header("Equivalent Times"),
+             card_header("2. See Equivalent Times"),
              card_body(
                tableOutput("time_table"),
                hr(),
-               h4("Add Custom City"),
-               selectizeInput("new_city_timezone", "Select City Timezone:", 
+               selectizeInput("new_city_timezone", "Add Custom Timezone:", 
                               choices = OlsonNames(),
                               options = list(
-                                placeholder = 'Search for a timezone',
+                                placeholder = 'Search',
                                 onInitialize = I('function() { this.setValue(""); }')
                               )),
-               actionButton("add_city", "Add City", class = "btn-primary")
+               actionButton("add_city", "Add Timezone", class = "btn-primary")
              )
            )
     )
