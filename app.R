@@ -3,7 +3,7 @@ library(shinyTime)
 library(lubridate)
 library(bslib)
 
-# List of timezones
+# List of timezones (New York removed)
 default_timezones <- c(
   "Europe/London",
   "Europe/Istanbul",
@@ -16,32 +16,34 @@ ui <- page_fluid(
   
   h1("International Meeting Time Converter"),
   
-  card(
-    card_header("Select Time and Timezone"),
-    card_body(
-      fluidRow(
-        column(4, timeInput("selected_time", "Select Time:", value = Sys.time(), seconds = FALSE)),
-        column(8, selectInput("selected_timezone", "Select Timezone:", 
-                              choices = OlsonNames(), 
-                              selected = "America/New_York"))
+  fluidRow(
+    column(4,
+      card(
+        card_header("Select Time and Timezone"),
+        card_body(
+          timeInput("selected_time", "Select Time:", value = Sys.time(), seconds = FALSE),
+          selectInput("selected_timezone", "Select Timezone:", 
+                      choices = OlsonNames(), 
+                      selected = "America/New_York")
+        )
       )
-    )
-  ),
-  
-  card(
-    card_header("Equivalent Times"),
-    card_body(
-      tableOutput("time_table")
-    )
-  ),
-  
-  card(
-    card_header("Add Custom City"),
-    card_body(
-      fluidRow(
-        column(6, selectInput("new_city_timezone", "Select City Timezone:", 
-                              choices = OlsonNames())),
-        column(6, actionButton("add_city", "Add City", class = "btn-primary"))
+    ),
+    column(4,
+      card(
+        card_header("Equivalent Times"),
+        card_body(
+          tableOutput("time_table")
+        )
+      )
+    ),
+    column(4,
+      card(
+        card_header("Add Custom City"),
+        card_body(
+          selectInput("new_city_timezone", "Select City Timezone:", 
+                      choices = OlsonNames()),
+          actionButton("add_city", "Add City", class = "btn-primary")
+        )
       )
     )
   )
