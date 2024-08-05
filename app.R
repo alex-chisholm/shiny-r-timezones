@@ -14,37 +14,56 @@ default_timezones <- c(
 ui <- page_fluid(
   theme = bs_theme(version = 5, bootswatch = "flatly"),
   
+  tags$head(
+    tags$style(HTML("
+      .card-body .dropdown-menu {
+        z-index: 1050 !important;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .card {
+        height: 800px;
+      }
+      .card-body {
+        overflow-y: auto;
+      }
+    "))
+  ),
+  
   h1("International Meeting Time Converter"),
   
   fluidRow(
-    column(4,
-      card(
-        card_header("Select Time and Timezone"),
-        card_body(
-          timeInput("selected_time", "Select Time:", value = Sys.time(), seconds = FALSE),
-          selectInput("selected_timezone", "Select Timezone:", 
-                      choices = OlsonNames(), 
-                      selected = "America/New_York")
-        )
-      )
+    column(6,
+           card(
+             card_header("Select Time and Timezone"),
+             card_body(
+               timeInput("selected_time", "Select Time:", value = NULL, seconds = FALSE),
+               selectizeInput("selected_timezone", "Select Timezone:", 
+                              choices = OlsonNames(), 
+                              selected = NULL,
+                              options = list(
+                                placeholder = 'Search for a timezone',
+                                onInitialize = I('function() { this.setValue(""); }')
+                              ))
+             )
+           )
     ),
-    column(4,
-      card(
-        card_header("Equivalent Times"),
-        card_body(
-          tableOutput("time_table")
-        )
-      )
-    ),
-    column(4,
-      card(
-        card_header("Add Custom City"),
-        card_body(
-          selectInput("new_city_timezone", "Select City Timezone:", 
-                      choices = OlsonNames()),
-          actionButton("add_city", "Add City", class = "btn-primary")
-        )
-      )
+    column(6,
+           card(
+             card_header("Equivalent Times"),
+             card_body(
+               tableOutput("time_table"),
+               hr(),
+               h4("Add Custom City"),
+               selectizeInput("new_city_timezone", "Select City Timezone:", 
+                              choices = OlsonNames(),
+                              options = list(
+                                placeholder = 'Search for a timezone',
+                                onInitialize = I('function() { this.setValue(""); }')
+                              )),
+               actionButton("add_city", "Add City", class = "btn-primary")
+             )
+           )
     )
   )
 )
@@ -64,28 +83,29 @@ server <- function(input, output, session) {
   })
   
   output$time_table <- renderTable({
-    req(input$selected_time, input$selected_timezone)
-    
-    # Convert the selected time to POSIXct
-    selected_time <- as.POSIXct(input$selected_time, format = "%H:%M")
-    
-    # Get the current date in the selected timezone
-    current_date <- as.Date(with_tz(Sys.time(), input$selected_timezone))
-    
-    # Combine the current date with the selected time
-    selected_datetime <- as.POSIXct(paste(current_date, format(selected_time, "%H:%M")),
-                                    tz = input$selected_timezone)
-    
     # Combine default and additional timezones
     all_timezones <- c(default_timezones, names(additional_cities()))
     
     result <- data.frame(
-      City = c(gsub(".*/(.*)", "\\1", default_timezones), 
-               gsub(".*/(.*)", "\\1", names(additional_cities()))),
-      Time = sapply(all_timezones, function(tz) {
+      City = gsub(".*/(.*)", "\\1", all_timezones),
+      Time = rep("--:-- --", length(all_timezones))
+    )
+    
+    if (!is.null(input$selected_time) && !is.null(input$selected_timezone) && input$selected_timezone != "") {
+      # Convert the selected time to POSIXct
+      selected_time <- as.POSIXct(input$selected_time, format = "%H:%M")
+      
+      # Get the current date in the selected timezone
+      current_date <- as.Date(with_tz(Sys.time(), input$selected_timezone))
+      
+      # Combine the current date with the selected time
+      selected_datetime <- as.POSIXct(paste(current_date, format(selected_time, "%H:%M")),
+                                      tz = input$selected_timezone)
+      
+      result$Time <- sapply(all_timezones, function(tz) {
         format(with_tz(selected_datetime, tz), "%I:%M %p")
       })
-    )
+    }
     
     result
   })
