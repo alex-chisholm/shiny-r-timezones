@@ -7,7 +7,6 @@ library(bslib)
 default_timezones <- c(
   "Europe/London",
   "Europe/Istanbul",
-  "Asia/Singapore",
   "Australia/Sydney"
 )
 
@@ -31,7 +30,6 @@ ui <- page_fluid(
   ),
   br(),
   h1("International Meeting Time Converter"),
-  h3('aka "Wait, I have to be awake when?"'),
   br(),
   
   fluidRow(
