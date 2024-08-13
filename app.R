@@ -29,7 +29,7 @@ ui <- page_fluid(
     "))
   ),
   br(),
-  h1("International Meeting Time Converter"),
+  h1("International Meeting Time Converter - From West Coast USA"),
   br(),
   
   fluidRow(
