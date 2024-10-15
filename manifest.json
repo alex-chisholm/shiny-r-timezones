@@ -1,1 +1,34 @@
 
+{
+  "version": 1,
+  "locale": "en_US",
+  "platform": "shiny",
+  "packages": [
+    {
+      "name": "shiny",
+      "version": "1.7.1",
+      "source": "CRAN"
+    },
+    {
+      "name": "shinyTime",
+      "version": "1.0.1",
+      "source": "CRAN"
+    },
+    {
+      "name": "lubridate",
+      "version": "1.8.0",
+      "source": "CRAN"
+    },
+    {
+      "name": "bslib",
+      "version": "0.4.0",
+      "source": "CRAN"
+    }
+  ],
+  "r_version": "4.1.0",
+  "metadata": {
+    "appmode": "shiny",
+    "primary_rmd": null,
+    "primary_html": null
+  }
+}
